@@ -1,9 +1,11 @@
-HotKeySet("{F1}", "DeSelectAll")
+HotKeySet("{F9}", "DeSelectAll")
+HotKeySet("{F11}", "ResetField")
+;HotKeySet("{F3}", "SaveFile")
 HotKeySet("{DEL}", "Delete")
-HotKeySet("a", "a")
-HotKeySet("s", "s")
-HotKeySet("d", "d")
-HotKeySet("f", "f")
+HotKeySet("{F1}", "a")
+HotKeySet("{F2}", "s")
+HotKeySet("{F3}", "d")
+HotKeySet("{F4}", "f")
 
 ; Deselects everything
 Func DeSelectAll()
@@ -78,3 +80,25 @@ Func Delete()
    EndIf
 EndFunc
 
+Func ResetField()
+   $iMsgBoxAnswer = MsgBox(52,"WARNING","You're about to delete the whole field, press Yes to continue")
+   Select
+	  Case $iMsgBoxAnswer = 6
+        ; Yes
+	  Case $iMsgBoxAnswer = 7
+        return
+   EndSelect
+
+   $count = 0
+   for $i = 0 to 35 Step 1
+	  for $c = 0 to 35 step 1
+		 if  $GridIcons[$i][$c] == "null" Then
+			$count+=1
+			GUICtrlSetData($debug, "Changes Skipped: " & $count)
+		 Else
+			GUICtrlSetImage($Grid[$i][$c], $imgfolder & "null.bmp")
+			$GridIcons[$i][$c] = "null"
+		 EndIf
+	  Next
+   Next
+EndFunc

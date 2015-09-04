@@ -5,20 +5,16 @@
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
 #include <HotKeys.au3>
-
-HotKeySet("{F1}", "DeSelectAll")
-HotKeySet("{DEL}", "Delete")
-HotKeySet("a", "a")
-HotKeySet("s", "s")
-HotKeySet("d", "d")
-HotKeySet("f", "f")
+#include <Exporter.au3>
+#include <Importer.au3>
+#include <Parser.au3>
 
 Global $Grid[36][36]
 Global $GridIcons[36][36]
 Global $tButton[3]
 Global $tButtonText[3] = ["Source Dir", "Refresh", "Load Selected"]
 Global $bButton[3]
-Global $bButtonText[3] = ["Save as", "Overwrite", "Create New"]
+Global $bButtonText[3] = ["Save as New", "Overwrite", "Random Level"]
 Global $iSelected[2] = [-1, -1]
 Global $cSelected[2] = [-1, -1]
 Global $boolSelectFirst = False
@@ -69,6 +65,8 @@ $Debug = GUICtrlCreateInput("", 16, 752, 585, 21)
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
 
+ImportMain()
+
 While 1
 	$nMsg = GUIGetMsg()
 
@@ -91,9 +89,27 @@ While 1
 			f()
 		 case $PictureNull
 			Delete()
+		 case $tButton[1]
+			Refresh()
+		 case $tButton[0]
+			ImportMain()
+		 case $tButton[2]
+			ParseMain($folder & "\" & GUICtrlRead($FileList))
+			_ArrayDisplay($aTextArray)
+		 case $bButton[0]
+			SaveFile()
+		 case $bButton[1]
+			OverWriteFile()
+		 case $bButton[2]
+			RandomLevel()
 	EndSwitch
  WEnd
 
+Func Refresh()
+   GUICtrlDelete($FileList)
+   $FileList = GUICtrlCreateList("", 620, 32, 257, 684)
+   FileShower()
+EndFunc
 
 ; Makes it possible when 2 points are clicked to select the whole area.
 Func ChangeInto($into)
