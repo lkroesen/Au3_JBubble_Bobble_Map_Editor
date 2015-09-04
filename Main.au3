@@ -23,13 +23,32 @@ Global $boolFullSelection = False
 Global $imgfolder = "img\"
 
 $GUIWSIZE = 890
-$GUIHSIZE = 782
+$GUIHSIZE = 806
 
 $GUI = GUICreate("JBubble Bobble: Level Editor", $GUIWSIZE, $GUIHSIZE, 192, 124)
 GUISetState(@SW_SHOW)
 
 #Region ### START Koda GUI section ### Form=
 $Main_Group_Level = GUICtrlCreateGroup("Level", 8, 8, 595, 601, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
+
+#Region Menu Items
+$MenuItem1 = GUICtrlCreateMenu("File")
+$MenuItem2 = GUICtrlCreateMenuItem("Load Level", $MenuItem1)
+$MenuItem3 = GUICtrlCreateMenuItem("Select Source Dir", $MenuItem1)
+$MenuItem4 = GUICtrlCreateMenuItem("Save As New", $MenuItem1)
+$MenuItem5 = GUICtrlCreateMenuItem("Random Level", $MenuItem1)
+$MenuItem6 = GUICtrlCreateMenuItem("Close Editor", $MenuItem1)
+$MenuItem7 = GUICtrlCreateMenu("HotKeys")
+$MenuItem8 = GUICtrlCreateMenuItem("Place Wall (F1)", $MenuItem7)
+$MenuItem9 = GUICtrlCreateMenuItem("Place Player (F2)", $MenuItem7)
+$MenuItem10 = GUICtrlCreateMenuItem("Place Platform (F3)", $MenuItem7)
+$MenuItem11 = GUICtrlCreateMenuItem("Place Enemy (F4)", $MenuItem7)
+$MenuItem12 = GUICtrlCreateMenuItem("Empty Space (DEL)", $MenuItem7)
+$MenuItem13 = GUICtrlCreateMenuItem("Deselect All (F9)", $MenuItem7)
+$MenuItem14 = GUICtrlCreateMenuItem("Fix my issues (F10)", $MenuItem7)
+$MenuItem15 = GUICtrlCreateMenuItem("Reset Field (F11)", $MenuItem7)
+#EndRegion
+
 
 for $i = 0 to 35 Step 1
    for $c = 0 to 35 Step 1
@@ -38,14 +57,14 @@ for $i = 0 to 35 Step 1
    Next
 Next
 
-$Level_Selection_Group = GUICtrlCreateGroup("Level Selection", 611, 8, 273, 769, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
+$Level_Selection_Group = GUICtrlCreateGroup("Level Selection", 611, 8, 273, 775, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
 $FileList = GUICtrlCreateList("", 620, 32, 257, 684)
 for $i = 0 to 2 Step 1
    $tButton[$i] = GUICtrlCreateButton( $tButtonText[$i], 620 + ($i * 90), 720, 75, 25)
-   $bButton[$i] = GUICtrlCreateButton( $bButtonText[$i], 620 + ($i * 90), 748, 75, 25)
+   $bButton[$i] = GUICtrlCreateButton( $bButtonText[$i], 620 + ($i * 90), 752, 75, 25)
 Next
 
-$ResourcesGroup = GUICtrlCreateGroup("Resources", 8, 616, 595, 161, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
+$ResourcesGroup = GUICtrlCreateGroup("Resources", 8, 621, 595, 161, BitOR($GUI_SS_DEFAULT_GROUP,$BS_CENTER))
 $PictureWall = GUICtrlCreatePic($imgfolder & "X.bmp", 24, 632, 36, 36)
 $WallLabel = GUICtrlCreateLabel("Wall", 24, 675, 35, 17, $SS_CENTER)
 
@@ -95,13 +114,43 @@ While 1
 			ImportMain()
 		 case $tButton[2]
 			ParseMain($folder & "\" & GUICtrlRead($FileList))
-			_ArrayDisplay($aTextArray)
 		 case $bButton[0]
 			SaveFile()
 		 case $bButton[1]
 			OverWriteFile()
 		 case $bButton[2]
 			RandomLevel()
+		 case $MenuItem13
+			DeSelectAll()
+		 case $MenuItem14
+			MagicFixButton()
+		 case $MenuItem15
+			ResetField()
+		 case $MenuItem12
+			Delete()
+		 case $MenuItem8
+			a()
+		 case $MenuItem9
+			s()
+		 case $MenuItem10
+			d()
+		 case $MenuItem11
+			f()
+		 case $MenuItem2
+			$num = InputBox("Level Number", "Input the number of the level e.g. 42 (.txt is added automatically)")
+			If $num <= $numFiles and $num > 0 Then
+			   ParseMain($folder & "\" & $num & ".txt")
+			Else
+			   Msgbox(0, "OUT OF BOUNDS", $num & ".txt is not in the list.")
+			EndIf
+		 case $MenuItem3
+			ImportMain()
+		 Case $MenuItem4
+			SaveFile()
+		 Case $MenuItem5
+			RandomLevel()
+		 Case $MenuItem6
+			exit
 	EndSwitch
  WEnd
 
@@ -114,8 +163,13 @@ EndFunc
 ; Makes it possible when 2 points are clicked to select the whole area.
 Func ChangeInto($into)
    if $boolSelectSecond == False and $boolSelectFirst == True Then
-	  GUICtrlSetImage($Grid[$iSelected[0]][$cSelected[0]], $imgfolder & $into & ".bmp")
-	  $GridIcons[$iSelected[0]][$cSelected[0]] = $into
+
+	  if $GridIcons[$iSelected[0]][$cSelected[0]] == $into Then
+		 ; Do Nothing
+	  Else
+		 GUICtrlSetImage($Grid[$iSelected[0]][$cSelected[0]], $imgfolder & $into & ".bmp")
+		 $GridIcons[$iSelected[0]][$cSelected[0]] = $into
+	  EndIf
 	  $iSelected[0] = -1
 	  $cSelected[0] = -1
 	  $boolSelectFirst = false
@@ -124,8 +178,12 @@ Func ChangeInto($into)
 	  if ($iSelected[1] - $iSelected[0]) >= ($cSelected[1] - $cSelected[0]) Then
 		 for $c = $cSelected[0] to $cSelected[1] step 1
 			For $i = $iSelected[0] to $iSelected[1] step 1
-			   GUICtrlSetImage($Grid[$i][$c], $imgfolder & $into & ".bmp")
-			   $GridIcons[$i][$c] = $into
+			   if $GridIcons[$i][$c] == $into Then
+				  ; Do Nothing
+			   Else
+				  GUICtrlSetImage($Grid[$i][$c], $imgfolder & $into & ".bmp")
+				  $GridIcons[$i][$c] = $into
+			   EndIf
 			Next
 		 Next
 
@@ -133,8 +191,12 @@ Func ChangeInto($into)
 	  ElseIf ($iSelected[1] - $iSelected[0]) < ($cSelected[1] - $cSelected[0]) Then
 		 for $i = $iSelected[0] to $iSelected[1] step 1
 			For $c = $cSelected[0] to $cSelected[1] step 1
-			   GUICtrlSetImage($Grid[$i][$c], $imgfolder & $into & ".bmp")
-			   $GridIcons[$i][$c] = $into
+			   if $GridIcons[$i][$c] == $into Then
+				  ; Do Nothing
+			   Else
+				  GUICtrlSetImage($Grid[$i][$c], $imgfolder & $into & ".bmp")
+				  $GridIcons[$i][$c] = $into
+			   EndIf
 			Next
 		 Next
 	  EndIf

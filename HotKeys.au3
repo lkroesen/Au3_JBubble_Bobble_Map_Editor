@@ -1,4 +1,5 @@
 HotKeySet("{F9}", "DeSelectAll")
+HotKeySet("{F10}", "MagicFixButton")
 HotKeySet("{F11}", "ResetField")
 ;HotKeySet("{F3}", "SaveFile")
 HotKeySet("{DEL}", "Delete")
@@ -6,6 +7,13 @@ HotKeySet("{F1}", "a")
 HotKeySet("{F2}", "s")
 HotKeySet("{F3}", "d")
 HotKeySet("{F4}", "f")
+
+; If this can't save you, restart the program.
+Func MagicFixButton()
+   DeSelectAll()
+   ResetField()
+   Refresh()
+EndFunc
 
 ; Deselects everything
 Func DeSelectAll()
