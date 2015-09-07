@@ -9,8 +9,15 @@
 #include <Importer.au3>
 #include <Parser.au3>
 
-Global $Grid[36][36]
-Global $GridIcons[36][36]
+Global $BlockSize = InputBox("Input Block Size", "Input Block Size, must be greater than 5 and lower than 37")
+If $BlockSize >= 6 and $BlockSize <= 36 Then
+   ; All Fine
+Else
+   BlockSize()
+EndIf
+Global $ExportIcons[$BlockSize][$BlockSize]
+Global $Grid[$BlockSize][$BlockSize]
+Global $GridIcons[$BlockSize][$BlockSize]
 Global $tButton[3]
 Global $tButtonText[3] = ["Source Dir", "Refresh", "Load Selected"]
 Global $bButton[3]
@@ -50,9 +57,9 @@ $MenuItem15 = GUICtrlCreateMenuItem("Reset Field (F11)", $MenuItem7)
 #EndRegion
 
 
-for $i = 0 to 35 Step 1
-   for $c = 0 to 35 Step 1
-	  $Grid[$i][$c] = GUICtrlCreatePic("img\null.bmp", (16+ ($i*16) ), (24+ ($c*16)), 16, 16)
+for $i = 0 to $BlockSize-1 Step 1
+   for $c = 0 to $BlockSize-1 Step 1
+	  $Grid[$i][$c] = GUICtrlCreatePic("img\null.bmp", ((-8.3*$BlockSize + 314.8) + ($i*16) ), ( (-8.2*$BlockSize + 319.2) + ($c*16)), 16, 16)
 	  $GridIcons[$i][$c] = "null"
    Next
 Next
@@ -215,8 +222,8 @@ EndFunc
 
 ; Handles the tile selection on the screen
 Func TileSelector($msg)
-   for $i = 0 to 35 Step 1
-	  for $c = 0 to 35 Step 1
+   for $i = 0 to $BlockSize-1 Step 1
+	  for $c = 0 to $BlockSize-1 Step 1
 		 if $msg == $Grid[$i][$c] Then
 			if $iSelected[0] == $i AND $cSelected[0] == $c Then
 			   $iSelected[0] = -1

@@ -1,10 +1,8 @@
-Global $ExportIcons[36][36]
-
 Func SaveFile()
    ChangeNullToSpace()
-   for $c = 0 to 35 Step 1
+   for $c = 0 to $BlockSize-1 Step 1
 	  $strBuild = ""
-	  for $i = 0 to 35 Step 1
+	  for $i = 0 to $BlockSize-1 Step 1
 		 $strBuild &= $ExportIcons[$i][$c]
 	  Next
 	  FileWriteline($folder & "\" & $numFiles+1 & ".txt", $strBuild)
@@ -15,9 +13,9 @@ EndFunc
 Func OverWriteFile()
    ChangeNullToSpace()
    FileDelete($folder & "\" & GUICtrlRead($FileList))
-   for $c = 0 to 35 Step 1
+   for $c = 0 to $BlockSize-1 Step 1
 	  $strBuild = ""
-	  for $i = 0 to 35 Step 1
+	  for $i = 0 to $BlockSize-1 Step 1
 		 $strBuild &= $ExportIcons[$i][$c]
 	  Next
 	  FileWriteline($folder & "\" & GUICtrlRead($FileList), $strBuild)
@@ -27,9 +25,9 @@ EndFunc
 
 ; Creates a COMPLETELY random level
 Func RandomLevel()
-   for $c = 0 to 35 Step 1
-	  for $i = 0 to 35 Step 1
-		 if $i == 8 AND $c == 32 Then
+   for $c = 0 to $BlockSize-1 Step 1
+	  for $i = 0 to $BlockSize-1 Step 1
+		 if $i == Round($BlockSize/8) AND $c == $BlockSize-4 Then
 			GUICtrlSetImage($Grid[$i][$c], $imgfolder & "P.bmp")
 			$GridIcons[$i][$c] = "P"
 		 Else
@@ -55,8 +53,8 @@ Func RandomChar()
 EndFunc
 
 Func ChangeNulltoSpace()
-   for $y = 0 to 35 Step 1
-	  for $x = 0 to 35 Step 1
+   for $y = 0 to $BlockSize-1 Step 1
+	  for $x = 0 to $BlockSize-1 Step 1
 			if $GridIcons[$x][$y] == "null" Then
 			   $ExportIcons[$x][$y] = " "
 			Else

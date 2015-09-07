@@ -8,6 +8,17 @@ HotKeySet("{F2}", "s")
 HotKeySet("{F3}", "d")
 HotKeySet("{F4}", "f")
 
+Func BlockSize()
+   $BlockSize = InputBox("Var", "Block Size: ")
+
+   If $BlockSize >= 6 and $BlockSize <= 36 Then
+   ; All Fine
+   Else
+	  BlockSize()
+   EndIf
+
+EndFunc
+
 ; If this can't save you, restart the program.
 Func MagicFixButton()
    DeSelectAll()
@@ -18,11 +29,13 @@ EndFunc
 ; Deselects everything
 Func DeSelectAll()
    if $boolSelectSecond == False Then
-	  GUICtrlSetImage($Grid[$iSelected[0]][$cSelected[0]], $imgfolder & NameComplement($GridIcons[$iSelected[0]][$cSelected[0]]) & ".bmp")
-	  $GridIcons[$iSelected[0]][$cSelected[0]] = NameComplement($GridIcons[$iSelected[0]][$cSelected[0]])
-	  $iSelected[0] = -1
-	  $cSelected[0] = -1
-	  $boolSelectFirst = false
+	  if $boolSelectFirst == True Then
+		 GUICtrlSetImage($Grid[$iSelected[0]][$cSelected[0]], $imgfolder & NameComplement($GridIcons[$iSelected[0]][$cSelected[0]]) & ".bmp")
+		 $GridIcons[$iSelected[0]][$cSelected[0]] = NameComplement($GridIcons[$iSelected[0]][$cSelected[0]])
+		 $iSelected[0] = -1
+		 $cSelected[0] = -1
+		 $boolSelectFirst = false
+	  EndIf
    Else
 	  ; Larger equal i
 	  if ($iSelected[1] - $iSelected[0]) >= ($cSelected[1] - $cSelected[0]) Then
@@ -98,8 +111,8 @@ Func ResetField()
    EndSelect
 
    $count = 0
-   for $i = 0 to 35 Step 1
-	  for $c = 0 to 35 step 1
+   for $i = 0 to $BlockSize-1 Step 1
+	  for $c = 0 to $BlockSize-1 step 1
 		 if  $GridIcons[$i][$c] == "null" Then
 			$count+=1
 			GUICtrlSetData($debug, "Changes Skipped: " & $count)

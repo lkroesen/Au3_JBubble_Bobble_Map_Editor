@@ -20,8 +20,8 @@ EndFunc
 
 Func ShowParse()
    $count = 1
-   for $c = 0 to 35 Step 1
-	  for $i = 0 to 35 Step 1
+   for $c = 0 to $BlockSize-1 Step 1
+	  for $i = 0 to $BlockSize-1 Step 1
 		 if $GridIcons[$i][$c] == $aTextArray[$count] Then
 			; Optimization Hype
 		 Else
