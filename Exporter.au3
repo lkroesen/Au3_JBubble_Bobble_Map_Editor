@@ -52,11 +52,19 @@ Func RandomChar()
    EndIf
 EndFunc
 
+; Changes letters to their right ones for the parser
+; null becomes space,
+; P becomes p
+; E becomes e
 Func ChangeNulltoSpace()
    for $y = 0 to $BlockSize-1 Step 1
 	  for $x = 0 to $BlockSize-1 Step 1
 			if $GridIcons[$x][$y] == "null" Then
 			   $ExportIcons[$x][$y] = " "
+			elseif $GridIcons[$x][$y] == "P" Then
+			   $ExportIcons[$x][$y] = "p"
+			elseif $GridIcons[$x][$y] == "E" Then
+			   $ExportIcons[$x][$y] = "e"
 			Else
 			   $ExportIcons[$x][$y] = $GridIcons[$x][$y]
 			EndIf
